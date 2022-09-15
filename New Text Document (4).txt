@@ -1,0 +1,122 @@
+#Group by clause
+
+/*
+SELECT client_id, SUM(invoice_total) as total_sales from invoices
+GROUP BY client_id;
+*/
+
+# suppose we want to see the sales that happens in the second half of the year
+
+/*
+SELECT client_id, SUM(invoice_total) as total_sales from invoices
+where invoice_date >= '2019-07-01'
+GROUP BY client_id
+*/
+
+# group by multiple tables
+
+/*
+select c.city, c.state, sum(invoice_total) as total_sales from invoices i
+JOIN clients c
+USING(client_id)
+GROUP BY c.state, c.city;
+*/
+
+#Exercise
+
+/*
+SELECT date, pm.name as payment_method, sum(amount) as total_payments from payments p
+JOIN payment_methods pm
+on p.payment_method = pm.payment_method_id
+GROUP BY date, pm.name;
+*/
+
+# having clause
+
+/*
+SELECT 
+	client_id,
+	SUM(invoice_total) as total_sales,
+    COUNT(invoice_total) as no_of_invoices
+FROM invoices
+GROUP BY client_id
+HAVING total_sales > 500 and no_of_invoices > 5;
+*/
+
+/*
+SELECT 
+	c.customer_id,
+    c.first_name,
+    c.last_name,
+    SUM(quantity * unit_price) as total_sales
+FROM store.customers c
+JOIN store.orders o
+USING(customer_id)
+JOIN order_items oi
+USING(order_id)
+where state = 'VA'
+GROUP BY c.customer_id, c.first_name, c.last_name;
+*/
+
+# with roll up operator
+
+/*
+SELECT 
+	state,
+    city,
+    SUM(invoice_total) as total_invoice
+FROM invoices i
+JOIN clients c
+USING(client_id)
+GROUP BY state, city WITH ROLLUP;
+*/
+
+/*
+SELECT 
+	pm.name,
+    SUM(amount) as total
+FROM payments p
+JOIN payment_methods pm
+on p.payment_method = pm.payment_method_id
+GROUP BY pm.name WITH ROLLUP;
+*/
+
+# sub queries
+
+/*
+SELECT * FROM store.products 
+where unit_price > ( SELECT unit_price FROM products where product_id = 3); 
+*/
+
+/*
+SELECT * FROM hr.employees
+WHERE salary > (SELECT AVG(salary) FROM hr.employees);
+*/
+
+/*
+SELECT * FROM store.products where product_id NOT IN 
+	(
+        SELECT DISTINCT product_id FROM store.order_items
+    );
+*/
+
+#sub queries vs joins 
+
+/*
+SELECT * FROM store.customers
+WHERE customer_id IN
+	(
+        SELECT o.customer_id
+        FROM order_items oi
+        JOIN orders o USING(order_id)
+        WHERE product_id = 3
+     );
+*/  
+  
+
+/*
+SELECT DISTINCT c.customer_id, c.first_name, c.last_name FROM store.customers c
+JOIN store.orders o USING(customer_id)
+JOIN store.order_items oi USING(order_id)
+WHERE oi.product_id = 3;
+*/
