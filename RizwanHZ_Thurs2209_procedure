@@ -1,0 +1,9 @@
+CREATE DEFINER=`root`@`localhost` PROCEDURE `new_procedure`()
+BEGIN
+	select customer_id, concat(first_name, ' ', last_name) as full_name,
+		p.name, o.order_id, p.unit_price
+		from customers c
+		join orders o using(customer_id)
+		join order_items oi using(order_id)
+		join products p using(product_id);
+END
