@@ -47,12 +47,20 @@ $c = array_combine($a, $b);
 
 // print_r($c);
 
-$numbers = [1, 2, 3, 4, 5, 6, 7];
+$numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
+// Array map 
 // $newNumbers = array_map(function ($number) {
 //     return "Number $number";
 // }, $numbers);
 
-$lessThen10 = array_filter($numbers, fn($number) =)
 
-print_r($newNumbers);
+// Array filter
+
+// $evenNumbers = array_filter($numbers, fn ($number) => $number % 2 === 0);
+// print_r($evenNumbers);
+
+// array reduce
+
+$sum = array_reduce($numbers, fn ($carry, $number) => $carry + $number);
+print_r($sum);
